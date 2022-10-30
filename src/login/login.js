@@ -1,34 +1,38 @@
-const CLIENT_ID = "053fb26c8a9b404fb927a02b0213b3e7";
+import { ACCESS_TOKEN, EXPIRES_IN, TOKEN_TYPE } from "../common";
+
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const APP_URL = "http://localhost:3000";
 const scopes =
   "user-top-read user-follow-read playlist-read-private user-library-read";
-const REDIRECT_URI = "http://localhost:3000/login/login.html";
-const ACCESS_TOKEN_KEY = "accesstoken";
-const APP_URL = "http://localhost:3000/";
 
 const authorizeUser = () => {
   const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${scopes}&show_dialog=true`;
   window.open(url, "login", "width=800, height=600");
 };
 
+// runs once when the /login page is loaded
 document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.getElementById("login-to-spotify");
   loginButton.addEventListener("click", authorizeUser);
 });
 
 window.setItemsInLocalStorage = ({ accessToken, tokenType, expiresIn }) => {
-  localStorage.setItem("accessToken", accessToken);
-  localStorage.setItem("tokenType", tokenType);
-  localStorage.setItem("expiresIn", expiresIn);
+  localStorage.setItem(ACCESS_TOKEN, accessToken);
+  localStorage.setItem(TOKEN_TYPE, tokenType);
+  localStorage.setItem(EXPIRES_IN, expiresIn);
   window.location.href = APP_URL;
 };
 
+// runs after the user has logged in using the spotify's login page
 window.addEventListener("load", () => {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+  const accessToken = localStorage.getItem(ACCESS_TOKEN);
 
   if (accessToken) {
-    window.location.href = `${APP_URL}/dashboard/dashboad.html`;
+    window.location.href = `${APP_URL}/dashboard/dashboard.html`;
   }
 
+  console.log(window.opener);
   if (window.opener !== null && !window.opener.closed) {
     window.focus();
     if (window.location.href.includes("error")) {
