@@ -2,7 +2,7 @@ import { ACCESS_TOKEN, EXPIRES_IN, TOKEN_TYPE } from "../common";
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-const APP_URL = "http://localhost:3000";
+const APP_URL = import.meta.env.VITE_APP_URL;
 const scopes =
   "user-top-read user-follow-read playlist-read-private user-library-read";
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.setItemsInLocalStorage = ({ accessToken, tokenType, expiresIn }) => {
   localStorage.setItem(ACCESS_TOKEN, accessToken);
   localStorage.setItem(TOKEN_TYPE, tokenType);
-  localStorage.setItem(EXPIRES_IN, expiresIn);
+  localStorage.setItem(EXPIRES_IN, Date.now() + expiresIn * 1000); // added and converted current date with expiresIn value into milliseconds
   window.location.href = APP_URL;
 };
 
@@ -32,7 +32,6 @@ window.addEventListener("load", () => {
     window.location.href = `${APP_URL}/dashboard/dashboard.html`;
   }
 
-  console.log(window.opener);
   if (window.opener !== null && !window.opener.closed) {
     window.focus();
     if (window.location.href.includes("error")) {
