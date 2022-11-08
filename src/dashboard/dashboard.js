@@ -96,32 +96,62 @@ const formatTime = (duration) => {
   return formattedTime;
 };
 
+const onTrackSelection = (id, event) => {
+  document.querySelectorAll("#tracks .track").forEach((trackItem) => {
+    if (trackItem.id === id) {
+      trackItem.classList.add("bg-gray", "selected");
+    } else {
+      trackItem.classList.remove("bg-gray", "selected");
+    }
+  });
+};
+
+const onPlayTrack = (
+  event,
+  { image, artistNames, name, duration, previewUrl, id }
+) => {
+  console.log(image, artistNames, name, duration, previewUrl, id);
+};
+
 const loadPlaylistTracks = ({ tracks }) => {
   const trackSection = document.querySelector("#tracks");
   let trackNo = 1;
   for (let trackItem of tracks.items) {
-    console.log(trackItem);
-    let { id, artists, name, album, duration_ms: duration } = trackItem.track;
+    let {
+      id,
+      artists,
+      name,
+      album,
+      duration_ms: duration,
+      preview_url: previewUrl,
+    } = trackItem.track;
     let image = album.images.find((img) => img.height === 64);
     let track = document.createElement("section");
+    let artistNames = Array.from(artists, (artist) => artist.name).join(", ");
     track.id = id;
     track.classList =
-      "track grid grid-cols-[50px_2fr_1fr_50px] p-1 items-center justify-items-start gap-4 rounded-md text-secondary hover:bg-light-black";
+      "track grid grid-cols-[50px_1fr_1fr_50px] p-1 items-center justify-items-start gap-4 rounded-md text-secondary hover:bg-light-black";
     track.innerHTML += `
-        <p class="justify-self-center">${trackNo++}</p>
+        <p class="relative w-full flex items-center justify-center justify-self-center"><span class="track-no">${trackNo++}</span></p>
         <section class="grid grid-cols-[auto_1fr] place-items-center gap-2">
-          <img class="h-8 w-8" src=${image.url} alt="" />
-          <article class="flex flex-col">
-            <h2 class="text-lg text-primary justify-start">${name}</h2>
-            <p class="text-sm">${Array.from(
-              artists,
-              (artist) => artist.name
-            ).join(", ")}</p>
+          <img class="h-10 w-10" src=${image.url} alt="" />
+          <article class="flex flex-col gap-2 justify-center">
+            <h2 class="text-base text-primary justify-start line-clamp-1">${name}</h2>
+            <p class="text-xs">${artistNames}</p>
           </article>
         </section>
-        <p>${album.name}</p>
-        <p>${formatTime(duration)}</p>
+        <p class="text-sm">${album.name}</p>
+        <p class="text-sm line-clamp-1">${formatTime(duration)}</p>
     `;
+    track.addEventListener("click", (event) => onTrackSelection(id, event));
+    const playButton = document.createElement("button");
+    playButton.id = `play-track${id}`;
+    playButton.className = `play w-full absolute left-0 text-lg invisible`;
+    playButton.textContent = "▶";
+    playButton.addEventListener("click", (event) =>
+      onPlayTrack(event, { image, artistNames, name, duration, previewUrl, id })
+    );
+    track.querySelector("p").appendChild(playButton);
     trackSection.appendChild(track);
   }
 };
@@ -130,10 +160,10 @@ const fillContentForPlaylist = async (playlistId) => {
   const playlist = await fetchRequest(`${ENDPOINT.playlist}/${playlistId}`);
   const pageContent = document.querySelector("#page-content");
   pageContent.innerHTML = `
-          <header id="playlist-header" class="py-4 px-8">
-            <nav>
+          <header id="playlist-header" class="mx-8 py-4 border-secondary border-b-[0.5px]">
+            <nav class="py-2">
               <ul
-                class="grid grid-cols-[50px_2fr_1fr_50px] gap-4 text-secondary"
+                class="grid grid-cols-[50px_1fr_1fr_50px] gap-4 text-secondary"
               >
                 <li class="justify-self-center">#</li>
                 <li>Title</li>
@@ -142,7 +172,7 @@ const fillContentForPlaylist = async (playlistId) => {
               </ul>
             </nav>
           </header>
-          <section id="tracks" class="px-8">
+          <section id="tracks" class="px-8 text-secondary mt-4">
           </section>
   `;
   loadPlaylistTracks(playlist);
@@ -152,16 +182,23 @@ const onContentScroll = (e) => {
   const { scrollTop } = e.target;
   const header = document.querySelector(".header");
   if (scrollTop >= header.offsetHeight) {
-    header.classList.add("sticky", "top-0", "bg-black-secondary");
+    header.classList.add("sticky", "top-0", "bg-black");
     header.classList.remove("bg-transparent");
   } else {
     header.classList.add("bg-transparent");
     header.classList.remove("sticky", "top-0", "bg-black-secondary");
   }
   if (history.state.type === SECTIONTYPE.PLAYLIST) {
+    const coverElement = document.querySelector("#cover-content");
     const playlistHeader = document.querySelector("#playlist-header");
-    if (scrollTop >= playlistHeader.offsetHeight) {
-      playlistHeader.classList.add("sticky", `top-[${header.offsetHeight}px]`);
+    if (scrollTop >= coverElement.offsetHeight - header.offsetHeight) {
+      playlistHeader.classList.add("sticky", "bg-black-secondary", "px-8");
+      playlistHeader.classList.remove("mx-8");
+      playlistHeader.style.top = `${header.offsetHeight}px`;
+    } else {
+      playlistHeader.classList.remove("sticky", "bg-black-secondary", "px-8");
+      playlistHeader.classList.add("mx-8");
+      playlistHeader.style.top = `revert`;
     }
   }
 };
@@ -184,8 +221,12 @@ const loadSection = (section) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadUserProfile();
-  const section = { type: SECTIONTYPE.DASHBOARD };
-  history.pushState(section, "", "");
+  // const section = { type: SECTIONTYPE.DASHBOARD };
+  const section = {
+    type: SECTIONTYPE.PLAYLIST,
+    playlist: "37i9dQZF1DX5cZuAHLNjGz",
+  };
+  history.pushState(section, "", `/dashboard/playlist/${section.playlist}`);
   loadSection(section);
   // fillContentForDashboard();
   document.addEventListener("click", () => {
