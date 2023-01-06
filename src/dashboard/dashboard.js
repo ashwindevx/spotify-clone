@@ -365,6 +365,27 @@ const loadSection = (section) => {
     .addEventListener("scroll", onContentScroll);
 };
 
+const onUserPlaylistClick = (id) => {
+  const section = { type: SECTIONTYPE.PLAYLIST, playlist: id };
+  history.pushState(section, "", `/playlist/${id}`);
+  loadSection(section);
+};
+
+// fn responsible for getting user's playlists
+const loadUserPlaylist = async () => {
+  const playlists = await fetchRequest(ENDPOINT.userPlaylist);
+  console.log(playlists);
+  const userPlaylist = document.querySelector("#user-playlists >ul");
+  userPlaylist.innerHTML = "";
+  for (let { name, id } of playlists.items) {
+    const li = document.createElement("li");
+    li.textContent = name;
+    li.className = "cursor-pointer hover:text-primary ";
+    li.addEventListener("click", () => onUserPlaylistClick(id));
+    userPlaylist.appendChild(li);
+  }
+};
+
 // fn that runs on dashboard page load
 document.addEventListener("DOMContentLoaded", async () => {
   const volume = document.querySelector("#volume");
