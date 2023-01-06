@@ -16,8 +16,48 @@
     <main
       class="grid-template-areas grid h-full grid-cols-[250px_1fr] grid-rows-[1fr_auto]"
     >
-      <aside class="sidenav">SideNav</aside>
+      <!-- sidenav -->
+      <aside class="sidenav">
+        <nav class="flex flex-col items-start gap-8 py-8 px-4">
+          <section class="">
+            <a href="/">
+              <img
+                class="h-10 w-full object-contain"
+                src="../login/Spotify_Logo_RGB_White.png"
+                alt="Spotify Logo"
+                srcset=""
+              />
+            </a>
+          </section>
+          <section>
+            <ul class="flex flex-col gap-4 text-sm text-secondary">
+              <li
+                class="flex cursor-pointer items-center gap-2 hover:text-primary"
+              >
+                <span class="material-symbols-rounded">home</span
+                ><span>Home</span>
+              </li>
+              <li
+                class="flex cursor-pointer items-center gap-2 hover:text-primary"
+              >
+                <span class="material-symbols-rounded"> search </span
+                ><span>Search</span>
+              </li>
+            </ul>
+          </section>
+          <section
+            id="user-playlists"
+            class="w-full border-t border-light-black pt-4"
+          >
+            <ul class="flex flex-col gap-4 text-sm text-secondary">
+              <li class="flex items-center gap-2">adf</li>
+            </ul>
+          </section>
+        </nav>
+      </aside>
+      <!-- main section -->
       <article class="content relative overflow-auto bg-transparent">
+        <!-- header -->
         <header class="header z-10 bg-transparent px-8 py-4">
           <nav class="relative flex justify-end">
             <button
@@ -64,15 +104,7 @@
         <article
           id="cover-content"
           class="black-base absolute top-0 -z-[1] grid h-72 w-full content-center bg-gradient-to-b from-light-black to-black-base px-4"
-        >
-          <!-- <h1 class="text-6xl">Hello Ashwin</h1> -->
-          <!-- <section class="grid grid-cols-[auto-1fr]">
-            <img src="" alt="" />
-            <h2 id="playlist-name" class="text-4xl">Playlist Name</h2>
-            <p id="playlist-artists">artists</p>
-            <p id="playlist-details">details</p>
-          </section> -->
-        </article>
+        ></article>
         <section id="page-content" class="mt-48 bg-black-base">
           <header class="px-8">
             <nav>

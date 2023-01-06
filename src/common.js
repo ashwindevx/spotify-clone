@@ -23,7 +23,7 @@ export const setItemInLocalStorage = (key, value) => {
 };
 
 export const getItemFromLocalStorage = (key) => {
-  JSON.parse(localStorage.getItem(key));
+  return JSON.parse(localStorage.getItem(key));
 };
 
 export const SECTIONTYPE = {
