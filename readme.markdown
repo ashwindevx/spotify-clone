@@ -1,7 +1,14 @@
-# Documentation
+### The inspiration behind building the app?
+I have always adored Spotify’s songs and playlists recommendations. Besides their awesome algorithm, I love the desktop as well as mobile UI UX. 
 
-## Authentication
+Considering my fondness for music and using Spotify as a tool daily for the past 2 years to listen to music made me want to work with Spotify’s API. And I could not hold myself from building my own clone with the magic of vanilla JS and TailwindCSS.
 
-Using [Implicit Grant Flow](https://developer.spotify.com/documentation/general/guides/authorization/implicit-grant/) for user authentication. The flow is carried out on the client side thus, server-side code is not required.
+### Tech stack:
+I used Vite, vanilla JS with my go-to TailwindCSS for styling. 
 
-![Authentication flow](https://developer.spotify.com/assets/AuthG_ImplicitGrant.png) _Authentication Flow Diagram_
+I usually build apps using libraries like ReactJS or more advanced frameworks like NextJS that take care of the hard part of the development we developers face. So the idea behind using just HTML and Vanilla Javascript was for me to understand the core concepts of Javascript and then again hop on the train of libraries and frameworks.
+
+### Features:
+- Authentication using Spotify's API.
+- Featured and Top Playlists are fetched that is generated for every Spotify User based on their listening activity.
+- Play/Pause/Next/Previous/Volume buttons and also the song duration bar. (Only 30s of a song can be played on the free plan.)
